@@ -7,7 +7,10 @@
 
 import Foundation
 
-class GetUserUseCaseResponse: Codable {
+import Foundation
+
+// MARK: - UserElement
+struct UserUseCaseResponse: Codable {
     let login: String
     let id: Int
     let nodeID: String
@@ -46,3 +49,5 @@ enum TypeEnum: String, Codable {
     case organization = "Organization"
     case user = "User"
 }
+
+typealias UsersUseCaseResponse = [UserUseCaseResponse]

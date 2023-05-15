@@ -1,25 +1,25 @@
 //
-//  HomeViewModel.swift
+//  UserViewModel.swift
 //  Teste-Carrefour
 //
-//  Created by Daniel Rodrigues da Silveira on 13/05/23.
+//  Created by Daniel Rodrigues da Silveira on 15/05/23.
 //
 
 import Foundation
 
-public enum HomeViewState {
-    case hasData(HomeViewEntity)
+public enum UserViewState {
+    case hasData(UserViewEntity)
     case hasError
     case loading
 }
 
-public protocol HomeViewModelDelegate: AnyObject {
+public protocol UserViewModelDelegate: AnyObject {
     func didChange(viewState: HomeViewState)
 }
 
-public class HomeViewModel {
+public class UserViewModel {
     
-    public weak var delegate: HomeViewModelDelegate?
+    public weak var delegate: UserViewModelDelegate?
     
     init() {
         apiService = APIService()
@@ -29,7 +29,7 @@ public class HomeViewModel {
     private var apiService: APIService?
     
     private func getUsers() {
-        apiService?.apiToGetUsersData { [weak self] in
+        apiService?.apiToGetUserData { [weak self] in
             let entity = HomeViewEntityFactory(data: $0).make()
             self?.delegate?.didChange(viewState: .hasData(entity))
         }

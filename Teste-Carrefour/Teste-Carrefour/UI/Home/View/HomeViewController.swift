@@ -8,19 +8,66 @@
 import Foundation
 import UIKit
 
-class HomeViewController: UIViewController {
-    weak var delegate: UserCoordinatorDelegate?
+public protocol HomeViewControllerViewDelegate: AnyObject {
+    var viewState: HomeViewState { get set }
+}
+
+class HomeViewController: UIViewController, HomeViewModelDelegate {
     
-    private var viewState: HomeViewState = .loading {
+    private var viewModel: HomeViewModel?
+    public let contentView = HomeView(frame: UIScreen.main.bounds)
+    public var viewState: HomeViewState = .loading {
         didSet {
             contentView.updateView(with: viewState)
         }
     }
 
-    public let contentView = HomeView()
+    init(viewModel: HomeViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+        viewModel.delegate = self
+        setupView()
+    }
+
+    private func setupView() {
+        view = contentView
+        contentView.delegate = self
+        navigationItem.titleView = searchBar
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    weak var delegate: UserCoordinatorDelegate?
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        self.view = contentView
+    private lazy var searchBar: UISearchBar = {
+        let searchBar = UISearchBar()
+        searchBar.searchBarStyle = UISearchBar.Style.default
+        searchBar.placeholder = " Procurar por usuário..."
+        searchBar.sizeToFit()
+        searchBar.isTranslucent = false
+        searchBar.backgroundImage = UIImage()
+        searchBar.delegate = self
+        searchBar.showsCancelButton = true
+        searchBar.largeContentTitle = "Usuários"
+        return searchBar
+    }()
+
+    
+    public func didChange(viewState: HomeViewState) {
+        self.viewState = viewState
+    }
+}
+
+extension HomeViewController: UISearchBarDelegate {
+    public func searchBar(_ searchBar: UISearchBar, textDidChange textSearched: String) {
+       print("search")
+    }
+}
+
+extension HomeViewController: HomeViewDelegate {
+    func didTapUserCell(with name: String) {
+        delegate?.showUserInfo(from: name)
     }
 }
