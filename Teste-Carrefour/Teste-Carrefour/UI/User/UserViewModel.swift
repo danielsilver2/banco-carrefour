@@ -14,23 +14,23 @@ public enum UserViewState {
 }
 
 public protocol UserViewModelDelegate: AnyObject {
-    func didChange(viewState: HomeViewState)
+    func didChange(viewState: UserViewState)
 }
 
 public class UserViewModel {
     
     public weak var delegate: UserViewModelDelegate?
     
-    init() {
+    init(userId: String) {
         apiService = APIService()
-        getUsers()
+        getUser(with: userId)
     }
     
     private var apiService: APIService?
     
-    private func getUsers() {
-        apiService?.apiToGetUserData { [weak self] in
-            let entity = HomeViewEntityFactory(data: $0).make()
+    private func getUser(with userId: String) {
+        apiService?.apiToGetUserData(with: userId) { [weak self] in
+            let entity = UserViewEntityFactory(data: $0).make()
             self?.delegate?.didChange(viewState: .hasData(entity))
         }
     }

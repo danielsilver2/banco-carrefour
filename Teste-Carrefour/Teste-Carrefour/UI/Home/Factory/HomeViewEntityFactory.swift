@@ -19,9 +19,12 @@ class HomeViewEntityFactory {
         .init(users: response.map { makeUserEntity(with: $0) })
     }
 
-    private func makeUserEntity(with data: UserUseCaseResponse) -> UserEntity {
+    private func makeUserEntity(with data: UserUseCaseResponse) -> UserViewEntity {
         return .init(
-            name: data.login
+            name: data.login,
+            avatarUrl: URL(string: data.avatarURL),
+            followerNumber: data.following,
+            followingNumber: data.followers
         )
     }
 }

@@ -13,10 +13,6 @@ protocol HomeViewDelegate: AnyObject {
     func didTapUserCell(with name: String)
 }
 
-//protocol HomeViewProtocol: AnyObject {
-//    var viewState: HomeViewState
-//}
-
 public class HomeView: UIView {
 
     weak var delegate: HomeViewDelegate?
@@ -33,7 +29,7 @@ public class HomeView: UIView {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(HomeViewTableViewCell.self, forCellReuseIdentifier: HomeViewTableViewCell.id)
-        tableView.allowsSelection = false
+        tableView.allowsSelection = true
         return tableView
     }()
 
@@ -46,23 +42,8 @@ public class HomeView: UIView {
         addConstraints()
     }
 
-    
-//    init() {
-//        super.init(frame: .zero)
-//        addViewHierarchy()
-//        addConstraints()
-//    }
-//
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-
-    func updateView(with entity: HomeViewEntity) {
-        viewEntity = entity
-
-        DispatchQueue.main.async { [weak self] in
-            self?.tableView.reloadData()
-        }
     }
 
     private func addViewHierarchy() {
@@ -76,11 +57,20 @@ public class HomeView: UIView {
         }
         
         tableView.snp.makeConstraints {
-            $0.top.equalTo(contentView.snp.top).offset(20)
-            $0.left.right.equalToSuperview().offset(24)
+            $0.top.equalTo(contentView.snp.top).offset(Metrics.large)
+            $0.left.right.equalToSuperview().offset(Metrics.large)
             $0.bottom.equalToSuperview()
         }
     }
+
+    public func updateView(with entity: HomeViewEntity) {
+        viewEntity = entity
+
+        DispatchQueue.main.async { [weak self] in
+            self?.tableView.reloadData()
+        }
+    }
+
 }
 
 extension HomeView {

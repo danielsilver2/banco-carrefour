@@ -6,9 +6,5 @@
 //
 
 public struct HomeViewEntity {
-    public let users: [UserEntity]
-}
-
-public struct UserEntity {
-    public let name: String
+    public let users: [UserViewEntity]
 }

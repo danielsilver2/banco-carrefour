@@ -8,12 +8,8 @@
 import Foundation
 import UIKit
 
-protocol Coordinator {
-    var parentCoordinator: Coordinator? { get set }
-    var children: [Coordinator] { get set }
-    var navigationController : UINavigationController { get set }
-    
-    func start()
+protocol MainCoordinatorDelegate: AnyObject {
+    func showUserInfo(from name: String)
 }
 
 class MainCoordinator: Coordinator {
@@ -24,10 +20,34 @@ class MainCoordinator: Coordinator {
     init(navigationController: UINavigationController) {
         self.navigationController = navigationController
     }
-
+    
     func start() {
-        let userCoordinator = UserCoordinator(navigationController: navigationController)
-        userCoordinator.parentCoordinator = self
-        userCoordinator.start()
+        let vc = makeHomeViewController()
+        navigationController.pushViewController(vc, animated: false)
     }
 }
+
+// MARK: ViewControllers Factory
+extension MainCoordinator {
+    func makeHomeViewController() -> HomeViewController {
+        let viewModel = HomeViewModel()
+        let vc = HomeViewController(viewModel: viewModel)
+        vc.delegate = self
+        return vc
+    }
+
+    func makeUserViewController(with userId: String) -> UserViewController {
+        let viewModel = UserViewModel(userId: userId)
+        let vc = UserViewController(viewModel: viewModel)
+        vc.delegate = self
+        return vc
+    }
+}
+
+extension MainCoordinator: MainCoordinatorDelegate {
+    func showUserInfo(from name: String) {
+        let vc = makeUserViewController(with: name)
+        navigationController.pushViewController(vc, animated: false)
+    }
+}
+

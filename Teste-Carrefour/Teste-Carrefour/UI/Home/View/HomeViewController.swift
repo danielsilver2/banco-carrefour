@@ -12,15 +12,20 @@ public protocol HomeViewControllerViewDelegate: AnyObject {
     var viewState: HomeViewState { get set }
 }
 
-class HomeViewController: UIViewController, HomeViewModelDelegate {
+class HomeViewController: UIViewController {
+
+    private struct ClassMetrics {
+        static let searchBarText = " Procurar por usuário..."
+    }
     
-    private var viewModel: HomeViewModel?
-    public let contentView = HomeView(frame: UIScreen.main.bounds)
+    private var viewModel: HomeViewModel
+    private let contentView = HomeView(frame: UIScreen.main.bounds)
     public var viewState: HomeViewState = .loading {
         didSet {
             contentView.updateView(with: viewState)
         }
     }
+    public weak var delegate: MainCoordinatorDelegate?
 
     init(viewModel: HomeViewModel) {
         self.viewModel = viewModel
@@ -38,23 +43,21 @@ class HomeViewController: UIViewController, HomeViewModelDelegate {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
-    weak var delegate: UserCoordinatorDelegate?
     
     private lazy var searchBar: UISearchBar = {
         let searchBar = UISearchBar()
         searchBar.searchBarStyle = UISearchBar.Style.default
-        searchBar.placeholder = " Procurar por usuário..."
+        searchBar.placeholder = ClassMetrics.searchBarText
         searchBar.sizeToFit()
         searchBar.isTranslucent = false
         searchBar.backgroundImage = UIImage()
         searchBar.delegate = self
         searchBar.showsCancelButton = true
-        searchBar.largeContentTitle = "Usuários"
         return searchBar
     }()
+}
 
-    
+extension HomeViewController: HomeViewModelDelegate {
     public func didChange(viewState: HomeViewState) {
         self.viewState = viewState
     }

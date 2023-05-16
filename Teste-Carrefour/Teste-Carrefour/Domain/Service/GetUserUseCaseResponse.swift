@@ -7,9 +7,6 @@
 
 import Foundation
 
-import Foundation
-
-// MARK: - UserElement
 struct UserUseCaseResponse: Codable {
     let login: String
     let id: Int
@@ -23,6 +20,7 @@ struct UserUseCaseResponse: Codable {
     let receivedEventsURL: String
     let type: TypeEnum
     let siteAdmin: Bool
+    let followers, following: Int?
 
     enum CodingKeys: String, CodingKey {
         case login, id
@@ -42,6 +40,7 @@ struct UserUseCaseResponse: Codable {
         case receivedEventsURL = "received_events_url"
         case type
         case siteAdmin = "site_admin"
+        case followers, following
     }
 }
 
